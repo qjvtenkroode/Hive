@@ -1,0 +1,12 @@
+version: '3'
+services:
+    service.registry:
+        build: 
+            context: ./service.registry
+            args:
+                DEV: 1
+        volumes:
+            - "./service.registry:/usr/src/app"
+        ports:
+            - 8000:80
+        command: ["go", "test", "-v", "./..."]
