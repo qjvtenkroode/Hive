@@ -7,8 +7,7 @@ import (
 
 func main() {
 	store := new(InMemoryStore)
-	seed := make(map[string]Asset)
-	store.Assets = seed
+	store.Assets = make(map[string]Asset)
 	server := NewServer(store)
 
 	if err := http.ListenAndServe(":80", server); err != nil {

@@ -10,3 +10,15 @@ services:
         ports:
             - 8000:80
         command: ["go", "test", "-v", "./..."]
+
+    service.shelly:
+        build:
+            context: ./service.shelly
+            args:
+                DEV: 1
+        volumes:
+            - "./service.shelly:/usr/src/app"
+        ports:
+            - 9000:80
+        command: ["go", "test", "-v", "./..."]
+

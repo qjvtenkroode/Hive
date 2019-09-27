@@ -8,3 +8,12 @@ services:
         ports:
             - 8000:80
         command: ["app"]
+
+    service.shelly:
+        build:
+            context: ./service.shelly
+        volumes:
+            - "./service.shelly:/usr/src/app"
+        ports:
+            - 9000:80
+        command: ["app"]
