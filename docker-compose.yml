@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 services:
     service.registry:
         build: 
@@ -17,3 +17,12 @@ services:
         ports:
             - 9000:80
         command: ["app"]
+    service.hive:
+        build:
+            context: ./service.hive
+            target: 'develop-stage'
+        volumes:
+            - "./service.hive:/usr/src/app"
+        ports:
+            - 8080:8080
+        command: /bin/sh -c "npm run serve"

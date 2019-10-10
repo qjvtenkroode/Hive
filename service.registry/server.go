@@ -72,6 +72,10 @@ func (s *Server) handleAssets(w http.ResponseWriter, r *http.Request) {
 	trailing := r.URL.Path[len("/assets"):]
 	id := strings.Split(trailing[1:], "/")[0]
 	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
+
 	switch r.Method {
 	case http.MethodGet:
 		s.handleAssetsGet(w, r, id)
@@ -79,6 +83,8 @@ func (s *Server) handleAssets(w http.ResponseWriter, r *http.Request) {
 		s.handleAssetsPost(w, r, id)
 	case http.MethodDelete:
 		s.handleAssetsDelete(w, r, id)
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

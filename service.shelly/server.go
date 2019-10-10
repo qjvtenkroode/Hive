@@ -85,12 +85,17 @@ func (s *Server) handleState(w http.ResponseWriter, r *http.Request) {
 	trailing := r.URL.Path[len("/state"):]
 	id := strings.Split(trailing[1:], "/")[0]
 	w.Header().Set("content-type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Origin, Accept")
 
 	switch r.Method {
 	case http.MethodGet:
 		s.handleStateGet(w, r, id)
 	case http.MethodPost:
 		s.handleStatePost(w, r, id)
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
