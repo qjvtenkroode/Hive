@@ -24,6 +24,7 @@ type Server struct {
 type ShellyState struct {
 	Identifier string `json:"identifier"`
 	State      string `json:"state"`
+	Type       string `json:"type"`
 }
 
 // Store is an interface for datastorage
@@ -51,7 +52,7 @@ func NewServer(store Store, client mqtt.Client, token mqtt.Token) *Server {
 func (s *Server) onMessageReceived(client mqtt.Client, message mqtt.Message) {
 	r, _ := regexp.Compile("shellies/([^\\/]+)/relay/0")
 	shelly := strings.Split(r.FindStringSubmatch(message.Topic())[1], "-")
-	state := ShellyState{shelly[1], string(message.Payload())}
+	state := ShellyState{shelly[1], string(message.Payload()), shelly[0]}
 	err := s.Db.storeState(shelly[1], state)
 	if err != nil {
 		fmt.Println("error: ", err)
@@ -139,7 +140,7 @@ func (s *Server) handleStatePost(w http.ResponseWriter, r *http.Request, id stri
 		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
 		return
 	}
-	topic := fmt.Sprintf("shellies/shelly1-%s/relay/0/command", state.Identifier)
+	topic := fmt.Sprintf("shellies/%s-%s/relay/0/command", state.Type, state.Identifier)
 	s.client.Publish(topic, byte(0), false, state.State)
 
 	b, err := jsonify(w, state)

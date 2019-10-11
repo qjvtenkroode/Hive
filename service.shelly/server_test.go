@@ -36,7 +36,7 @@ func TestShelly(t *testing.T) {
 			postbody:    nil,
 			statuscode:  http.StatusOK,
 			contenttype: "application/json",
-			body:        "{\"identifier\":\"2C0A55\",\"state\":\"on\"}",
+			body:        "{\"identifier\":\"2C0A55\",\"state\":\"on\",\"type\":\"shelly1\"}",
 		},
 		"GET /state/notfound": {
 			url:         "/state/notfound/",
@@ -49,18 +49,18 @@ func TestShelly(t *testing.T) {
 		"POST /state/2C0A55": {
 			url:         "/state/2C0A55/",
 			method:      http.MethodPost,
-			postbody:    bytes.NewBuffer([]byte("{\"identifier\":\"2C0A55\",\"state\":\"off\"}")),
+			postbody:    bytes.NewBuffer([]byte("{\"identifier\":\"2C0A55\",\"state\":\"off\",\"type\":\"shelly1\"}")),
 			statuscode:  http.StatusOK,
 			contenttype: "application/json",
-			body:        "{\"identifier\":\"2C0A55\",\"state\":\"off\"}",
+			body:        "{\"identifier\":\"2C0A55\",\"state\":\"off\",\"type\":\"shelly1\"}",
 		},
 		"POST /state/notfound": {
 			url:         "/state/notfound/",
 			method:      http.MethodPost,
-			postbody:    bytes.NewBuffer([]byte("{\"identifier\":\"notfound\",\"state\":\"off\"}")),
+			postbody:    bytes.NewBuffer([]byte("{\"identifier\":\"notfound\",\"state\":\"off\",\"type\":\"shelly1\"}")),
 			statuscode:  http.StatusOK,
 			contenttype: "application/json",
-			body:        "{\"identifier\":\"notfound\",\"state\":\"off\"}",
+			body:        "{\"identifier\":\"notfound\",\"state\":\"off\",\"type\":\"shelly1\"}",
 		},
 		"POST /state/nobody": {
 			url:         "/state/nobody/",
@@ -97,7 +97,7 @@ func TestShelly(t *testing.T) {
 func seedStore() Store {
 	store := new(InMemoryStore)
 	seed := make(map[string]ShellyState)
-	seed["2C0A55"] = ShellyState{Identifier: "2C0A55", State: "on"}
+	seed["2C0A55"] = ShellyState{Identifier: "2C0A55", State: "on", Type: "shelly1"}
 	store.States = seed
 	return store
 }

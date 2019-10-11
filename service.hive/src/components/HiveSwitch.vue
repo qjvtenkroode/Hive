@@ -2,11 +2,11 @@
   <div class="flex flex-wrap w-1/4 rounded-lg m-1 p-1 border border-orange-500">
     <div class="flex w-full">
       <div class="flex w-1/3">
-        <font-awesome-icon :icon="['fas', 'random']" />
+        <font-awesome-icon :icon="['fas', 'random']" size="lg" />
       </div>
       <div class="flex w-2/3 justify-end">
-        <button v-if="asset.state === 'on'" v-on:click="toggle"><font-awesome-icon :icon="['fas', 'toggle-on']" /></button>
-        <button v-else v-on:click="toggle"><font-awesome-icon :icon="['fas', 'toggle-off']" /></button>
+        <button v-if="asset.state === 'on'" v-on:click="toggle"><font-awesome-icon :icon="['fas', 'toggle-on']" size="lg" /></button>
+        <button v-else v-on:click="toggle"><font-awesome-icon :icon="['fas', 'toggle-off']" size="lg" /></button>
       </div>
     </div>
     <div class="w-full">
@@ -64,17 +64,14 @@
 
       toggle: function() {
         var vm = this;
-        var state = (this.asset.state == 'on' ? { identifier: this.asset.identifier, state: 'off' } : { identifier: this.asset.identifier, state: 'on' });
+        var state = (this.asset.state == 'on' ? { identifier: this.asset.identifier, state: 'off', type: this.asset.type } : { identifier: this.asset.identifier, state: 'on', type: this.asset.type });
         axios.post('http://' + host + ':9000/state/' + this.asset.identifier, state)
           // force reactivity by using this.$set to add fields
           .then(response => this.$set(this.asset, 'state', response.data.state))
           .catch(function(error) {
             vm.error = true;
             console.log(error.message);
-            console.log(error.headers);
-            console.log(error.request);
             console.log(error.data);
-            console.log(error.config);
           })
       }
     }
