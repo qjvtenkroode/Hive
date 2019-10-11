@@ -24,7 +24,8 @@ None
     ```json
     {
         "identifier": "asdagsdfj",
-        "state": "on"
+        "state": "on",
+        "type": "shelly1"
     }
     ```
 
@@ -52,7 +53,8 @@ Toggle the state
 ```json
 {
     "identifier": "asdagsdfj",
-    "state": "off"
+    "state": "off",
+    "type": "shelly1"
 }
 ```
 
@@ -64,7 +66,8 @@ Toggle the state
     ```json
     {
         "identifier": "asdagsdfj",
-        "state": "off"
+        "state": "off",
+        "type": "shelly1"
     }
     ```
 
