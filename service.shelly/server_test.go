@@ -36,7 +36,7 @@ func TestShelly(t *testing.T) {
 			postbody:    nil,
 			statuscode:  http.StatusOK,
 			contenttype: "application/json",
-			body:        "{\"identifier\":\"2C0A55\",\"state\":\"on\",\"type\":\"shelly1\"}",
+			body:        "{\"identifier\":\"2C0A55\",\"state\":\"on\",\"type\":\"shelly1\",\"last_update\":\"\"}",
 		},
 		"GET /state/notfound": {
 			url:         "/state/notfound/",
@@ -52,7 +52,7 @@ func TestShelly(t *testing.T) {
 			postbody:    bytes.NewBuffer([]byte("{\"identifier\":\"2C0A55\",\"state\":\"off\",\"type\":\"shelly1\"}")),
 			statuscode:  http.StatusOK,
 			contenttype: "application/json",
-			body:        "{\"identifier\":\"2C0A55\",\"state\":\"off\",\"type\":\"shelly1\"}",
+			body:        "{\"identifier\":\"2C0A55\",\"state\":\"off\",\"type\":\"shelly1\",\"last_update\":\"\"}",
 		},
 		"POST /state/notfound": {
 			url:         "/state/notfound/",
@@ -60,7 +60,7 @@ func TestShelly(t *testing.T) {
 			postbody:    bytes.NewBuffer([]byte("{\"identifier\":\"notfound\",\"state\":\"off\",\"type\":\"shelly1\"}")),
 			statuscode:  http.StatusOK,
 			contenttype: "application/json",
-			body:        "{\"identifier\":\"notfound\",\"state\":\"off\",\"type\":\"shelly1\"}",
+			body:        "{\"identifier\":\"notfound\",\"state\":\"off\",\"type\":\"shelly1\",\"last_update\":\"\"}",
 		},
 		"POST /state/nobody": {
 			url:         "/state/nobody/",

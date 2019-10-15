@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/eclipse/paho.mqtt.golang"
 	"github.com/russross/blackfriday"
@@ -25,6 +26,7 @@ type ShellyState struct {
 	Identifier string `json:"identifier"`
 	State      string `json:"state"`
 	Type       string `json:"type"`
+	LastUpdate string `json:"last_update"`
 }
 
 // Store is an interface for datastorage
@@ -50,9 +52,10 @@ func NewServer(store Store, client mqtt.Client, token mqtt.Token) *Server {
 }
 
 func (s *Server) onMessageReceived(client mqtt.Client, message mqtt.Message) {
+	t := time.Now().Format("Jan 02 15:04:05")
 	r, _ := regexp.Compile("shellies/([^\\/]+)/relay/0")
 	shelly := strings.Split(r.FindStringSubmatch(message.Topic())[1], "-")
-	state := ShellyState{shelly[1], string(message.Payload()), shelly[0]}
+	state := ShellyState{shelly[1], string(message.Payload()), shelly[0], t}
 	err := s.Db.storeState(shelly[1], state)
 	if err != nil {
 		fmt.Println("error: ", err)

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-wrap w-1/4 rounded-lg m-1 p-1 border border-orange-500">
-    <div class="flex w-full">
+    <div class="flex w-full pb-1">
       <div class="flex w-1/3">
         <font-awesome-icon :icon="['fas', 'random']" size="lg" />
       </div>
@@ -9,10 +9,10 @@
         <button v-else v-on:click="toggle"><font-awesome-icon :icon="['fas', 'toggle-off']" size="lg" /></button>
       </div>
     </div>
-    <div class="w-full">
-      <span>Last update: timestamp </span>
+    <div class="w-full border border-gray-500 border-double border-l-0 border-r-0">
+      <span class="font-hairline">Last update: {{ asset.last_update }} </span>
     </div>
-    <div class="w-full">
+    <div class="w-full pb-5 pt-1 text-center">
       <span>{{ asset.name }}</span>
     </div>
     <div class="flex w-full">
@@ -54,7 +54,10 @@
         var vm = this;
         axios.get('http://' + host + ':9000/state/' + this.asset.identifier)
           // force reactivity by using this.$set to add fields
-          .then(response => this.$set(this.asset, 'state', response.data.state))
+          .then(function(response) {
+            vm.$set(vm.asset, 'state', response.data.state);
+            vm.$set(vm.asset, 'last_update', response.data.last_update);
+          })
           .catch(function(error) {
             vm.error = true;
             console.log(error.message);

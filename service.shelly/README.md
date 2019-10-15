@@ -25,7 +25,8 @@ None
     {
         "identifier": "asdagsdfj",
         "state": "on",
-        "type": "shelly1"
+        "type": "shelly1",
+        "last_update": "Oct 14 09:29:17"
     }
     ```
 
@@ -67,7 +68,8 @@ Toggle the state
     {
         "identifier": "asdagsdfj",
         "state": "off",
-        "type": "shelly1"
+        "type": "shelly1",
+        "last_update": ""
     }
     ```
 
