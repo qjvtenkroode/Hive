@@ -10,9 +10,9 @@ services:
     service.hive:
         build:
             context: ./service.hive
-            target: prod
+            target: dev
         ports:
-            - 8080:80
+            - 8080:8080
 
     service.shelly:
         build:

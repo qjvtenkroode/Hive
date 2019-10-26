@@ -24,17 +24,17 @@ echo """# $1
 """ > $1/README.md
 
 touch $1/Dockerfile
-echo """FROM golang:1.12.6-alpine
+echo """FROM golang:latest AS builder
 
-ARG DEV
+WORKDIR $GOPATH/src/hive/
+COPY . . 
+RUN go get -d .
+RUN CGO_ENABLED=0 go build --tags netgo --ldflags \'-w -extldflags \"-static\"\' -a -o /go/app
 
-RUN if [ \"$DEV\" == \"1\" ] ; then apk add git gcc musl-dev tzdata; else apk add git tzdata; fi && cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime && apk del tzdata
+FROM scratch
 
-WORKDIR /go/src/app
-COPY . .
-
-RUN go get -d -v ./...
-RUN go install -v ./...""" > $1/Dockerfile
+COPY --from=builder /go/app /
+COPY --from=builder /go/src/hive/README.md /""" > $1/Dockerfile
 
 touch $1/server.go
 echo """package main

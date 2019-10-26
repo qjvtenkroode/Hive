@@ -1,18 +1,16 @@
-# develop stage
-FROM node:11.1-alpine AS develop-stage
+FROM node:alpine as dev
 WORKDIR /app
-COPY package*.json ./
-RUN yarn install
 COPY . .
+RUN npm install
 
-FROM node:latest AS build-stage
+FROM node:alpine as build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY ./ .
 RUN npm run build
 
-FROM nginx AS production-stage
+FROM nginx:alpine as prod
 RUN mkdir /app
-COPY --from=build-stage /app/dist /app
+COPY --from=build /app/dist /app
 COPY nginx.conf /etc/nginx/nginx.conf

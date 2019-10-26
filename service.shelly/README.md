@@ -1,7 +1,7 @@
 # Shelly
 
 Service for all Shelly assets and configurations within the home automation system. Responsible for controlling and receiving state on all Shelly assets.
-Currently only works for shelly1 assets
+Currently only works for shelly1 and shelly1pm assets
 
 ## Endpoints
 
