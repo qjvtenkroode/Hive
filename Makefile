@@ -13,7 +13,14 @@ clean:
 	@rm -rf $(GOBASE)/dist
 
 ## dist: Compiles OSX and Raspberry Pi compatible binaries
-dist: dist/osx dist/rpi
+dist: dist/hive dist/osx dist/rpi 
+
+## dist/hive: Compiles the Hive GUI
+dist/hive: service.hive/
+	@echo "	>	Building Hive GUI assets"
+	@cd service.hive && npm run build
+	@mv service.hive/dist dist/hive
+	@cp service.hive/nginx.conf dist/hive/
 
 ## dist/osx: Compiles OSX compatible binaries
 dist/osx: dist/osx/registry dist/osx/shelly
