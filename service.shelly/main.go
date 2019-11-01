@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"flag"
 	"log"
 	"net/http"
 
@@ -9,12 +10,18 @@ import (
 )
 
 func main() {
+	port := flag.String("p", "80", "port to use when running")
+	mqttUser := flag.String("u", "", "mqtt username")
+	mqttPassword := flag.String("pw", "", "mqtt password")
+	mqttHost := flag.String("h", "", "mqtt host and port <host>:<port>")
+	flag.Parse()
+
 	connOpts := mqtt.NewClientOptions()
-	connOpts.AddBroker("tcp://mqtt.qkroode.nl:1883")
+	connOpts.AddBroker("tcp://" + *mqttHost)
 	connOpts.SetClientID("hive.shelly")
 	connOpts.SetCleanSession(true)
-	connOpts.SetUsername("hivemind")
-	connOpts.SetPassword(",33TnJLPMy>VNax")
+	connOpts.SetUsername(*mqttUser)
+	connOpts.SetPassword(*mqttPassword)
 	connOpts.SetTLSConfig(&tls.Config{InsecureSkipVerify: true, ClientAuth: tls.NoClientCert})
 
 	client := mqtt.NewClient(connOpts)
@@ -31,7 +38,7 @@ func main() {
 		log.Fatalf("mqtt failed: %v", server.token.Error())
 	}
 
-	if err := http.ListenAndServe(":80", server); err != nil {
-		log.Fatalf("could not listen on port 80 %v", err)
+	if err := http.ListenAndServe(":"+*port, server); err != nil {
+		log.Fatalf("could not listen on port %s %v", *port, err)
 	}
 }
