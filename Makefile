@@ -18,6 +18,7 @@ dist: dist/hive dist/osx dist/rpi
 ## dist/hive: Compiles the Hive GUI
 dist/hive: service.hive/
 	@echo "	>	Building Hive GUI assets"
+	@mkdir -p $(dir $@)
 	@cd service.hive && npm run build
 	@mv service.hive/dist dist/hive
 	@cp service.hive/nginx.conf dist/hive/
