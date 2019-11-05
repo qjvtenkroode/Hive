@@ -21,6 +21,7 @@ type Asset struct {
 	Identifier string `json:"identifier"`
 	Name       string `json:"name"`
 	Type       string `json:"type"`
+	Controller string `json:"controller"`
 }
 
 // Store is an interface for datastorage

@@ -138,27 +138,29 @@ func (s *Server) handleStatePost(w http.ResponseWriter, r *http.Request, id stri
 	err = s.Db.storeState(state.Identifier, state)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
 		return
 	}
 
 	// Set the state at the Hue Bridge
 	payload := make(map[string]bool)
-	on, err := strconv.ParseBool(state.State)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	if state.State == "on" {
+		payload["on"] = true
+	} else {
+		payload["on"] = false
 	}
-	payload["on"] = on
 
 	statePayload, err := json.Marshal(payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
 		return
 	}
 
 	req, err := http.NewRequest("PUT", "http://"+s.Bridge.Address+"/api/"+s.Bridge.Token+"/lights/"+state.Identifier+"/state", bytes.NewBuffer(statePayload))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
 		return
 	}
 
@@ -168,12 +170,14 @@ func (s *Server) handleStatePost(w http.ResponseWriter, r *http.Request, id stri
 	_, err = client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
 		return
 	}
 
 	b, err := jsonify(w, state)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
