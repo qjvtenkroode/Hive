@@ -34,6 +34,15 @@
           .then(response => this.assets = response.data);
       }
     }
+    /*,
+
+    computed: {
+      shelly: function() {
+        return this.assets.filter(function(u) {
+          return u.type == "shelly1" || u.type == "shelly1pm"
+        })
+      }
+    }*/
   }
 </script>
 

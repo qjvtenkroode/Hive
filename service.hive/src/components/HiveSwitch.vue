@@ -52,7 +52,7 @@
     methods: {
       getState: function() {
         var vm = this;
-        axios.get('http://' + host + ':9000/state/' + this.asset.identifier)
+        axios.get(this.asset.controller + '/state/' + this.asset.identifier)
           // force reactivity by using this.$set to add fields
           .then(function(response) {
             vm.$set(vm.asset, 'state', response.data.state);
@@ -68,7 +68,7 @@
       toggle: function() {
         var vm = this;
         var state = (this.asset.state == 'on' ? { identifier: this.asset.identifier, state: 'off', type: this.asset.type } : { identifier: this.asset.identifier, state: 'on', type: this.asset.type });
-        axios.post('http://' + host + ':9000/state/' + this.asset.identifier, state)
+        axios.post(this.asset.controller + '/state/' + this.asset.identifier, state)
           // force reactivity by using this.$set to add fields
           .then(response => this.$set(this.asset, 'state', response.data.state))
           .catch(function(error) {
