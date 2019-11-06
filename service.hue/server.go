@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/russross/blackfriday"
@@ -208,11 +207,17 @@ func (s *Server) pollState() {
 		return
 	}
 	for key, value := range m {
+		var lightState string
 		value, _ := value.(map[string]interface{})
 		state, _ := value["state"].(map[string]interface{})
 		on, _ := state["on"].(bool)
+		if on == true {
+			lightState = "on"
+		} else {
+			lightState = "off"
+		}
 		modelid, _ := value["modelid"].(string)
-		hueState := HueLightState{key, strconv.FormatBool(on), modelid, ""}
+		hueState := HueLightState{key, lightState, modelid, ""}
 
 		err = s.Db.storeState(hueState.Identifier, hueState)
 		if err != nil {
