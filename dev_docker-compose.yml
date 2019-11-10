@@ -13,18 +13,18 @@ services:
             target: dev
         ports:
             - 8080:8080
+        command: /bin/sh -c "npm run serve"
 
     service.shelly:
         build:
             context: ./service.shelly
         ports:
             - 9000:80
-        command: ["/app"]
+        command: /app -p 80 -u ${MQTTUSER} -pw ${MQTTPASSWD} -h ${MQTTHOST}
 
     service.hue:
         build:
             context: ./service.hue
         ports:
             - 9001:80
-        command: ["/app"]
-
+        command: /app -p 80 -ha ${BRIDGEADDRESS} -ht ${BRIDGETOKEN}

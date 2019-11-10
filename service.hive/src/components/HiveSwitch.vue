@@ -25,57 +25,64 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
   export default {
-    name: "HiveSwitch",
+    name: 'HiveSwitch',
 
     props: ['asset'],
 
     mounted: function() {
-      this.getState()
-      
-      setInterval(function() {
-        this.error = false
-        this.getState()
-      }.bind(this), 5000);
+      this.getState();
+      this.pollData();
+   },
+
+    beforeDestroy: function () {
+      console.log("removing polling");
+      clearInterval(this.polling);
     },
 
     data: function() {
       return {
-        error: false
+        error: false,
+        polling: null
       }
     },
 
     methods: {
       getState: function() {
-        var vm = this;
         axios.get(this.asset.controller + '/state/' + this.asset.identifier)
           // force reactivity by using this.$set to add fields
-          .then(function(response) {
-            vm.$set(vm.asset, 'state', response.data.state);
-            vm.$set(vm.asset, 'last_update', response.data.last_update);
+          .then( response => {
+            this.$set(this.asset, 'state', response.data.state);
+            this.$set(this.asset, 'last_update', response.data.last_update);
           })
-          .catch(function(error) {
-            vm.error = true;
+          .catch( error => {
+            this.error = true;
             console.log(error.message);
             console.log(error.data);
           })
       },
 
       toggle: function() {
-        var vm = this;
         var state = (this.asset.state == 'on' ? { identifier: this.asset.identifier, state: 'off', type: this.asset.type } : { identifier: this.asset.identifier, state: 'on', type: this.asset.type });
         axios.post(this.asset.controller + '/state/' + this.asset.identifier, state)
           // force reactivity by using this.$set to add fields
-          .then(response => this.$set(this.asset, 'state', response.data.state))
-          .catch(function(error) {
-            vm.error = true;
+          .then( response => this.$set(this.asset, 'state', response.data.state))
+          .catch( error => {
+            this.error = true;
             console.log(error.message);
             console.log(error.data);
           })
+      },
+
+      pollData: function() {
+        this.polling = setInterval( () => {
+          this.error = false;
+          console.log("polling");
+          this.getState();
+        }, 5000);
       }
     }
   }
