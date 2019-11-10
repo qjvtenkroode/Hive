@@ -1,7 +1,8 @@
 <template>
   <div>
-    <button @click="getAssets" class="text-orange-500 hover:text-white hover:bg-orange-500 border border-orange-500 text-xs font-semibold rounded-full px-4 py-1 leading-normal">Refresh assets</button>
-    <div class="flex flex-wrap justify-center">
+    <!--<button @click="getAssets" class="text-orange-500 hover:text-white hover:bg-orange-500 border border-orange-500 text-xs font-semibold rounded-full px-4 py-1 leading-normal">Refresh assets</button>-->
+    <button @click="getAssets">Refresh assets</button>
+    <div>
       <HiveSwitch v-for="asset in assets" v-bind:key="asset.identifier" :asset="asset"></HiveSwitch>
     </div>
   </div>
