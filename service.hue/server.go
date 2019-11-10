@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/russross/blackfriday"
 )
@@ -121,6 +122,7 @@ func (s *Server) handleStateGet(w http.ResponseWriter, r *http.Request, id strin
 }
 
 func (s *Server) handleStatePost(w http.ResponseWriter, r *http.Request, id string) {
+	t := time.Now().Format("Jan 02 15:04:05")
 	if r.Body == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"no post body found\"}")
@@ -133,13 +135,7 @@ func (s *Server) handleStatePost(w http.ResponseWriter, r *http.Request, id stri
 		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
 		return
 	}
-
-	err = s.Db.storeState(state.Identifier, state)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
-		return
-	}
+	state.LastUpdate = t
 
 	// Set the state at the Hue Bridge
 	payload := make(map[string]bool)
@@ -167,6 +163,13 @@ func (s *Server) handleStatePost(w http.ResponseWriter, r *http.Request, id stri
 	client := &http.Client{}
 	// @TODO add more checks for bridge failures
 	_, err = client.Do(req)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
+		return
+	}
+
+	err = s.Db.storeState(state.Identifier, state)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = fmt.Fprintf(w, "{\"status\":\"error\",\"message\":\"%s\"}", err)
