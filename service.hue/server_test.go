@@ -28,14 +28,6 @@ func TestAssets(t *testing.T) {
 			contenttype: "text/html",
 			body:        string(blackfriday.MarkdownCommon([]byte(readme))),
 		},
-		"GET /state/2": {
-			url:         "/",
-			method:      http.MethodGet,
-			postbody:    nil,
-			statuscode:  http.StatusOK,
-			contenttype: "application/json",
-			body:        "{\"identifier\":\"2\",\"state\":\"on\",\"type\":\"test\",\"lat_update\":\"\"}"
-		},
 		"GET /state/notfound": {
 			url:         "/state/notfound/",
 			method:      http.MethodGet,
@@ -44,8 +36,6 @@ func TestAssets(t *testing.T) {
 			contenttype: "application/json",
 			body:        "{\"status\":\"error\",\"message\":\"asset not found\"}",
 		},
-
-
 	}
 
 	bridge := new(HueBridge)

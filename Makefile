@@ -12,8 +12,8 @@ clean:
 	@echo "	>	Cleaning dist"
 	@rm -rf $(GOBASE)/dist
 
-## dist: Compiles OSX and Raspberry Pi compatible binaries
-dist: dist/hive dist/osx dist/rpi 
+## dist: Compiles UNIX and Raspberry Pi compatible binaries
+dist: dist/hive dist/unix dist/rpi 
 
 ## dist/hive: Compiles the Hive GUI
 dist/hive: service.hive/
@@ -23,23 +23,25 @@ dist/hive: service.hive/
 	@mv service.hive/dist dist/hive
 	@cp service.hive/nginx.conf dist/hive/
 
-## dist/osx: Compiles OSX compatible binaries
-dist/osx: dist/osx/registry dist/osx/shelly
+## dist/unix: Compiles UNIX compatible binaries
+dist/unix: dist/unix/registry dist/unix/shelly dist/unix/hue
 
 ## dist/rpi: Compiles Raspberry Pi compatible binaries
-dist/rpi: dist/rpi/registry dist/rpi/shelly
+dist/rpi: dist/rpi/registry dist/rpi/shelly dist/rpi/hue
 
-## dist/osx/%: Compiles an OSX compatible binary
-dist/osx/%: service.%/
-	@echo "	>	Building OSX binary: $(notdir $@)"
+## dist/unix/%: Compiles an UNIX compatible binary
+dist/unix/%: service.%/
+	@echo "	>	Building UNIX binary: $(notdir $@)"
 	@mkdir -p $(dir $@)
 	@$(GOBUILD) -o $(GOBASE)/$@ $(GOBASE)/$<
+	@cp $(GOBASE)/$</README.md $(GOBASE)/$@.md
 
 ## dist/rpi/%: Compiles a Raspberry Pi compatible binary
 dist/rpi/%: service.%/
-	@echo "	>	Building static Raspberry Pi: binary $(notdir $@)"
+	@echo "	>	Building static Raspberry Pi binary: $(notdir $@)"
 	@mkdir -p $(dir $@)
 	@CGO_ENABLED=0 $(GOBUILD) -ldflags "-extldflags -static" -o $(GOBASE)/$@ $(GOBASE)/$<
+	@cp $(GOBASE)/$</README.md $(GOBASE)/$@.md
 
 ## help: Display this message
 help: Makefile
