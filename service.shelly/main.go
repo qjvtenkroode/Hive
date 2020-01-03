@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 func main() {
@@ -14,6 +14,7 @@ func main() {
 	mqttUser := flag.String("u", "", "mqtt username")
 	mqttPassword := flag.String("pw", "", "mqtt password")
 	mqttHost := flag.String("h", "", "mqtt host and port <host>:<port>")
+	readme := flag.String("readme", "README.md", "custom readme file")
 	flag.Parse()
 
 	connOpts := mqtt.NewClientOptions()
@@ -33,7 +34,7 @@ func main() {
 	store := new(InMemoryStore)
 	store.States = make(map[string]ShellyState)
 
-	server := NewServer(store, client, token)
+	server := NewServer(store, client, token, *readme)
 	if server.token = client.Subscribe("shellies/+/relay/0", byte(0), server.onMessageReceived); server.token.Wait() && server.token.Error() != nil {
 		log.Fatalf("mqtt failed: %v", server.token.Error())
 	}

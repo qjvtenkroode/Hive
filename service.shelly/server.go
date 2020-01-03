@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/russross/blackfriday"
 )
 
@@ -19,6 +19,7 @@ type Server struct {
 	client mqtt.Client
 	Db     Store
 	http.Handler
+	Readme string
 }
 
 // ShellyState is a representation of a state
@@ -36,7 +37,7 @@ type Store interface {
 }
 
 // NewServer creates a new server with routing configured
-func NewServer(store Store, client mqtt.Client, token mqtt.Token) *Server {
+func NewServer(store Store, client mqtt.Client, token mqtt.Token, readme string) *Server {
 	s := new(Server)
 
 	router := http.NewServeMux()
@@ -47,6 +48,7 @@ func NewServer(store Store, client mqtt.Client, token mqtt.Token) *Server {
 	s.Db = store
 	s.client = client
 	s.token = token
+	s.Readme = readme
 
 	return s
 }
@@ -66,7 +68,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Path
 	if url == "/" {
 		w.Header().Set("content-type", "text/html")
-		readme, err := ioutil.ReadFile("README.md")
+		readme, err := ioutil.ReadFile(s.Readme)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

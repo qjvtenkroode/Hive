@@ -14,6 +14,7 @@ import (
 type Server struct {
 	Db Store
 	http.Handler
+	Readme string
 }
 
 // Asset defines an asset with all its unique fields
@@ -33,7 +34,7 @@ type Store interface {
 }
 
 // NewServer creates a new server with routing configured
-func NewServer(store Store) *Server {
+func NewServer(store Store, readme string) *Server {
 	s := new(Server)
 
 	router := http.NewServeMux()
@@ -42,6 +43,7 @@ func NewServer(store Store) *Server {
 
 	s.Handler = router
 	s.Db = store
+	s.Readme = readme
 
 	return s
 }
@@ -50,7 +52,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Path
 	if url == "/" {
 		w.Header().Set("content-type", "text/html")
-		readme, err := ioutil.ReadFile("README.md")
+		readme, err := ioutil.ReadFile(s.Readme)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

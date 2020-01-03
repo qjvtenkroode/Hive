@@ -10,6 +10,7 @@ func main() {
 	port := flag.String("p", "80", "port to use when running")
 	bridgeAddress := flag.String("ha", "", "hue bridge address")
 	bridgeToken := flag.String("ht", "", "hue bridge token")
+	readme := flag.String("readme", "README.md", "custom readme file")
 	flag.Parse()
 
 	bridge := new(HueBridge)
@@ -19,7 +20,7 @@ func main() {
 	store := new(InMemoryStore)
 	store.States = make(map[string]HueLightState)
 
-	server := NewServer(store, *bridge)
+	server := NewServer(store, *bridge, *readme)
 
 	server.pollState()
 

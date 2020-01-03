@@ -17,6 +17,7 @@ type Server struct {
 	http.Handler
 	Db     Store
 	Bridge HueBridge
+	Readme string
 }
 
 // HueBridge represents a Hue Bridge for REST API interactions
@@ -40,7 +41,7 @@ type Store interface {
 }
 
 // NewServer creates a new server with routing configured
-func NewServer(store Store, h HueBridge) *Server {
+func NewServer(store Store, h HueBridge, readme string) *Server {
 	s := new(Server)
 
 	router := http.NewServeMux()
@@ -50,6 +51,7 @@ func NewServer(store Store, h HueBridge) *Server {
 	s.Handler = router
 	s.Db = store
 	s.Bridge = h
+	s.Readme = readme
 
 	return s
 }
@@ -58,7 +60,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Path
 	if url == "/" {
 		w.Header().Set("content-type", "text/html")
-		readme, err := ioutil.ReadFile("README.md")
+		readme, err := ioutil.ReadFile(s.Readme)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
